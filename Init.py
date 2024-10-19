@@ -3,9 +3,15 @@ import os
 
 from fake_useragent import UserAgent
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 
 import Config
+
+
+# 关闭浏览器实例
+def close_browser():
+    if Config.Browser:
+        Config.Browser.quit()
 
 
 def init_browser():
@@ -16,10 +22,13 @@ def init_browser():
     options.add_argument('--no-sandbox')
     options.add_argument(f'user-agent=={UserAgent().random}')
     # 无界面模式
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
 
-    Config.Browser = webdriver.Firefox(options=options)
-    Config.Browser.maximize_window()
+    try:
+        Config.Browser = webdriver.Chrome(options=options)
+        Config.Browser.maximize_window()
+    except Exception as e:
+        print(f"Failed to initialize browser: {e}")
 
 
 def init_cookie():
