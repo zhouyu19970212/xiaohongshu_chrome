@@ -1,6 +1,9 @@
 import base64
 import imaplib
 import time
+
+import unicodedata
+
 import log
 import Config
 
@@ -41,6 +44,21 @@ class EmailAccountManager:
         return accounts
 
 
+# 自动补齐base64编码字符串
+def fix_base64(s):
+    missing_padding = 4 - len(s) % 4
+    # 去掉后面不用的字符串，写在这里不合适，先把功能跑通，后续再优化
+    unused_string = str.find(s, '------')
+    s = s[:unused_string]
+    log.common_logger.info(f'检查是否需要补齐字符串')
+    if missing_padding:
+        s += '=' * missing_padding
+        log.common_logger.info(f'需要补齐, 长度为{len(s)}, 增加字符串: {s}')
+    else:
+        log.common_logger.info(f'不需要补齐')
+    return s
+
+
 def get_phone_code() -> str:
     time.sleep(30)
     with imaplib.IMAP4_SSL(mail_host, port) as serv:
@@ -64,6 +82,8 @@ def get_phone_code() -> str:
         key_content_idx = str.find(email_content, 'Content-Transfer-Encoding: base64')
         email_content = email_content[key_content_idx + len('Content-Transfer-Encoding: base64'):]
         log.common_logger.info(f'提取信息：{email_content}')
+        email_content = fix_base64(email_content)
+        log.common_logger.info(f'补齐字符串：{email_content}')
         # base64解码，并转成utf-8格式
         decoded_content_for_base64 = base64.b64decode(email_content).decode('utf-8')
         log.common_logger.info(f'base64解码：{decoded_content_for_base64}')
@@ -76,10 +96,12 @@ def get_phone_code() -> str:
         return phone_code_info
 
 
-# def get_phone_number() -> str:
-#     with open(Config.phone_number_file_path, mode='r', encoding='utf-8') as file:
-#         for line in file:
-#             line = line.strip()  # 去除行末的换行符
-#             if line:  # 忽略空行
-#                 Config.phone_num = line
-#     return Config.phone_num
+def waiting_and_log(exp_time):
+    for i in range(exp_time):
+        log.common_logger.info(f'等待{i}秒.....................')
+        time.sleep(1)
+
+
+def filter_bmp(s):
+    bmp_chars = (char for char in s if ord(char) < 0x10000)
+    return ''.join(bmp_chars)

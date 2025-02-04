@@ -21,4 +21,4 @@ def setup_logger(name, log_file, level=logging.INFO):
 
 
 # 通用日志记录器
-common_logger = setup_logger('common_logger', 'main.log')
+common_logger = setup_logger('common_logger', 'debug_main.log')

@@ -1,11 +1,13 @@
 import json
 import os
+import log
+import Config
 
 from fake_useragent import UserAgent
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
-import Config
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 # 关闭浏览器实例
@@ -20,15 +22,18 @@ def init_browser():
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--no-sandbox')
+    options.add_argument('--headless')  # 无头模式，锁屏运行
     options.add_argument(f'user-agent=={UserAgent().random}')
     # 无界面模式
     # options.add_argument('--headless')
 
     try:
-        Config.Browser = webdriver.Chrome(options=options)
+        log.common_logger.info(f"正在实例化webdriver...")
+        service = ChromeService(executable_path=r"D:\coding\robot\chromedriver-win64\chromedriver.exe")
+        Config.Browser = webdriver.Chrome(options=options, service=service)
         Config.Browser.maximize_window()
     except Exception as e:
-        print(f"Failed to initialize browser: {e}")
+        log.common_logger.info(f"Failed to initialize browser: {e}")
 
 
 def init_cookie():

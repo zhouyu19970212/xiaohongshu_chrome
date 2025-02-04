@@ -25,11 +25,13 @@ title = ""
 describe = ""
 
 # 图片存放路径
-catalog_image = r"E:\Project\Python\小红书\image"
+catalog_image = r"D:\xiaohongshu\photo"
 # 邮件账号存放路径
 email_accounts_file_path = r'D:\xiaohongshu\config\email_account.txt'
 # 手机号存放路径
 phone_number_file_path = r'D:\xiaohongshu\config\phone_number.txt'
+# api接口账号存放路径
+ai_path = r'D:\xiaohongshu\config\ai_api.txt'
 
 # 文件后缀
 suffix = ['.jpg', '.jpeg', '.png', '.webp']
@@ -47,8 +49,23 @@ phone_code = ""
 
 # control_flow
 control_flow = Queue()
-control_flow.put('n')
-control_flow.put('2')
+publish_num = 30
+for i in range(publish_num):
+    control_flow.put('n')
+    control_flow.put('2')
 
 # 发布计数器
 publish_count = 0
+# 发布时间间隔
+publish_duaration_time = 1800
+
+# 百度千帆智能接口
+with open(ai_path) as file:
+    api_key, secret_key = file.read().split(':')
+client_id = api_key
+secret_id = secret_key
+access_key = ""
+
+# AI语料库配置文件
+language_db_path = r'D:\xiaohongshu\config\lang_db.txt'
+language_db = {}

@@ -4,32 +4,8 @@
 
 > 先决条件  
 > - Python 3.11.1  
-> - 下载 Firefox 提供的 WebDriver
+> - 下载 Chrome 提供的 WebDriver
 >   - [geckodriver](https://github.com/mozilla/geckodriver)
-
-### 克隆项目
-
-```shell
-git clone https://github.com/LuckyTime1025/xiaohongshu.git
-```
-
-### 进入项目目录
-
-```shell
-cd xiaohongshu
-```
-
-### 创建虚拟环境
-
-```shell
-python -m venv venv
-```
-
-### 激活虚拟环境
-
-```shell
-.\venv\Scripts\activate
-```
 
 ### 安装 Pypi 依赖
 

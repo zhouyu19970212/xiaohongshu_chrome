@@ -19,8 +19,10 @@ def select_user():
         for i, v in enumerate(Config.UserList):
             print(f"{i + 1}.{v}", end="\t")
         # select = input("\n请选择用户(输入'n'使用手机号登录)：")
-        # 没有做其他登录方式，目前只能用手机号登录，暂时用control_flow控制
-        select = Config.control_flow.get()
+        # TODO: 没有做其他登录方式，目前只能用手机号登录，暂时用control_flow控制
+        # TODO: 使用队列来控制状态，使用中有点问题，还没想好怎么优化，暂时写死为n
+        # select = Config.control_flow.get()
+        select = 'n'
         if select == 'n':
             # 手机号登录
             Config.login_status = True
@@ -77,6 +79,7 @@ def login():
         EC.presence_of_all_elements_located((By.CLASS_NAME, 'css-19z0sa3'))
     )
     log.common_logger.info(f'准备发送手机号')
+    tool.waiting_and_log(3)
     input_phone[1].send_keys(phone_number)
     log.common_logger.info(f'success!{phone_number}')
 
@@ -127,14 +130,18 @@ def Quit():
 
 def select_create():
     while True:
+        log.common_logger.info(f"当前发布次数：{Config.publish_count}")
         if Config.publish_count != 0:
-            time.sleep(1800)
+            publish_duaration_time = Config.publish_duaration_time
+            log.common_logger.info(f"发布次数大于0次，间隔{publish_duaration_time}秒再进行自动发布")
+            time.sleep(publish_duaration_time)
         if Config.Browser.current_url != "https://creator.xiaohongshu.com/publish/publish":
             Config.Browser.get("https://creator.xiaohongshu.com/publish/publish")
-        print("1. 视频上传  2.图文上传  3. 切换用户 4.退出")
-        # 功能选择，暂时只做了图文上传，现在用control_flow控制
+        log.common_logger.info(f"1. 视频上传  2.图文上传  3. 切换用户 4.退出")
+        # TODO: 功能选择，暂时只做了图文上传，现在用control_flow控制
         # select = input("请选择功能：")
-        select = Config.control_flow.get()
+        # select = Config.control_flow.get() # TODO: 使用队列来控制状态，使用中有点问题，还没想好怎么优化，暂时写死为2
+        select = '2'
         match select:
             case '1':
                 Create.create_video()
